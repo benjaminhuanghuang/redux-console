@@ -1,17 +1,9 @@
-
-const { createStore, applyMiddleware } = require('redux');
-
-
-const logger = store => next => action => {
-  console.log('dispatching', action)
-  let result = next(action)
-  console.log('state after action', store.getState())
-  return result
-}
+const {
+  createStore
+} = require('redux');
 
 const defaultState = {
-  courses: [
-    {
+  courses: [{
       name: 'Learning React',
       topic: 'React',
     },
@@ -31,21 +23,26 @@ function reducer(state, action) {
   switch (action.type) {
     case 'ADD_COURSE':
       return Object.assign({}, state, {
-        courses: [...state.courses, action.course]
-      });
+        courses: [...state.courses, action.course]  });
     default:
       return state;
   }
 }
 // reducer to run all actions
 // 
-const store = createStore(reducer, defaultState, applyMiddleware(logger));
+const store = createStore(reducer, defaultState);
 
+
+
+// -- Old version
+// function addView(viewFunc) {
+//   viewFunc(defaultState);
+// }
 
 function addView(viewFunc) {
-  viewFunc(store.getState());
-
+  //viewFunc(store.getState());
   store.subscribe(() => {
+    // Be called when state changed
     viewFunc(store.getState());
   })
 }
@@ -58,7 +55,7 @@ addView((state) => {
   console.log(`The latest course in the library: ${state.courses[state.courses.length -1].name}`);
 });
 
-
+//  Change the store
 store.dispatch({
   type: 'ADD_COURSE',
   course: {
